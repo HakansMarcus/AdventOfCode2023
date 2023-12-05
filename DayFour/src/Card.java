@@ -4,23 +4,46 @@ import java.util.stream.Collectors;
 
 public class Card {
 
+    List<Card> cards;
+
     int points;
+    int numberOfMatches;
+    int id;
     String data;
     List<Integer> numbers;
     List<Integer> winningNumbers;
 
     public Card(String data) {
+        this.numberOfMatches = 0;
         this.data = data;
-        System.out.println("inserted line: " + data);
+        initializeLists();
+        System.out.println("Insert Line: " + data);
+        initializeCard();
+    }
+
+    public void initializeLists() {
+        cards = new ArrayList<>();
+        cards.add(this);
         numbers = new ArrayList<>();
         winningNumbers = new ArrayList<>();
+    }
+
+
+    public void initializeCard() {
+        setId(data);
         takeOutNumbers(data);
+        setNumberOfMatches();
+        setWinningCardsForCardId();
         calculatePoints();
     }
 
-    //Card   1: 91 73 74 57 24 99 31 70 60  8 | 89 70 43 24 62 30 91 87 60 57 90  2 27  3 31 25 39 83 64 73 99  8 74 37 49
+    public void setId(String data) {
+        String[] values = data.split(":");
+        String value = values[0];
+        String id = value.replaceAll("[^0-9]", "");
+        this.id = Integer.parseInt(id);
+    }
 
-    //  91 73 74 57 24 99 31 70 60  8 | 89 70 43 24 62 30 91 87 60 57 90  2 27  3 31 25 39 83 64 73 99  8 74 37 49
     public void takeOutNumbers(String data) {
         String[] splitValues = data.split(":");
         String values = splitValues[1];
@@ -28,13 +51,16 @@ public class Card {
         takeOutDealtNumbers(values);
     }
 
-    //  91 73 74 57 24 99 31 70 60  8
     public void takeOutDealtNumbers(String values) {
         String[] dealtNumbers = values.split("\\|");
+
         String numberPart = dealtNumbers[0].trim();
+        System.out.println("Dealt number of card: " + numberPart);
+
         String[] numbersArray = numberPart.split("\\s+");
 
         String winningNumbers = dealtNumbers[1].trim();
+        System.out.println("Winning cards: " + winningNumbers);
 
         // Ta ut utdelade korten för spelare och lägg till listan
         for (int i = 0; i < numbersArray.length; i++) {
@@ -59,8 +85,6 @@ public class Card {
                 winningNumbers.add(Integer.parseInt(winningNumberpart[i]));
             }
         }
-
-        System.out.println(winningNumbers.toString());
     }
 
 
@@ -72,31 +96,11 @@ public class Card {
         return winningNumbers;
     }
 
-/*
-    Card   1:
-
-          Dealt hand      91 73 74 57 24 99 31 70 60  8
-
-          Winning cards   89 70 43 24 62 30 91 87 60 57 90  2 27  3 31 25 39 83 64 73 99  8 74 37 49
-
-
-
-                        // 8
-          Points: 91, 73, 74, 99, 31, 70, 60, 8  = 128
-
-
-
-
-
- */
-
     public void calculatePoints() {
-
         List<Integer> common =
                 numbers.stream()
                         .filter(winningNumbers::contains)
                         .collect(Collectors.toList());
-
 
         if(common.size() == 1) {
             points = 1;
@@ -104,17 +108,65 @@ public class Card {
 
         else if (common.size() > 1) {
             points = (int) Math.pow(2, common.size()-1);
-
         }
+    }
 
-        System.out.println("Common numbers: " + common.toString());
-        System.out.println("Points: " + points);
+    public void setNumberOfMatches () {
+        List<Integer> common =
+                numbers.stream()
+                        .filter(winningNumbers::contains)
+                        .collect(Collectors.toList());
+        int matches = common.size();
+        this.numberOfMatches = matches;
+        System.out.println("Number of matches: " + numberOfMatches + "\n");
+
     }
 
 
     public int getPoints() {
         return points;
     }
+
+    public int getNumberOfMatches() {
+        return numberOfMatches;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+
+
+    // Card 1:
+    // 4 Matches
+    // Card 2,3,4,5
+    public void setWinningCardsForCardId() {
+        System.out.println("Card id: " + id);
+        System.out.println("Should win cards: ");
+
+        int start = id+1;
+        int end = start + getNumberOfMatches();
+
+        // 2,3,4,5
+        for (int i = start; i < end ; i++) {
+            System.out.println("Card: " + i);
+
+        }
+
+        System.out.println(cards.get(0).getNumberOfMatches());;
+
+
+
+
+
+
+
+        System.out.println("----------------------------------------");
+
+    }
+
+
+
 
 
 
