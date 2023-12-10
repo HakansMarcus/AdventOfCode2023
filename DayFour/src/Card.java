@@ -5,19 +5,18 @@ import java.util.stream.Collectors;
 public class Card {
 
     List<Card> cards;
-
     int points;
     int numberOfMatches;
     int id;
     String data;
     List<Integer> numbers;
     List<Integer> winningNumbers;
+    List<Integer> children;
 
     public Card(String data) {
         this.numberOfMatches = 0;
         this.data = data;
         initializeLists();
-        System.out.println("Insert Line: " + data);
         initializeCard();
     }
 
@@ -26,6 +25,7 @@ public class Card {
         cards.add(this);
         numbers = new ArrayList<>();
         winningNumbers = new ArrayList<>();
+        children = new ArrayList<>();
     }
 
 
@@ -33,7 +33,6 @@ public class Card {
         setId(data);
         takeOutNumbers(data);
         setNumberOfMatches();
-        setWinningCardsForCardId();
         calculatePoints();
     }
 
@@ -55,12 +54,12 @@ public class Card {
         String[] dealtNumbers = values.split("\\|");
 
         String numberPart = dealtNumbers[0].trim();
-        System.out.println("Dealt number of card: " + numberPart);
+        //System.out.println("Dealt number of card: " + numberPart);
 
         String[] numbersArray = numberPart.split("\\s+");
 
         String winningNumbers = dealtNumbers[1].trim();
-        System.out.println("Winning cards: " + winningNumbers);
+        //System.out.println("Winning cards: " + winningNumbers);
 
         // Ta ut utdelade korten för spelare och lägg till listan
         for (int i = 0; i < numbersArray.length; i++) {
@@ -118,7 +117,7 @@ public class Card {
                         .collect(Collectors.toList());
         int matches = common.size();
         this.numberOfMatches = matches;
-        System.out.println("Number of matches: " + numberOfMatches + "\n");
+      //  System.out.println("Number of matches: " + numberOfMatches + "\n");
 
     }
 
@@ -136,38 +135,17 @@ public class Card {
     }
 
 
-
-    // Card 1:
-    // 4 Matches
-    // Card 2,3,4,5
-    public void setWinningCardsForCardId() {
-        System.out.println("Card id: " + id);
-        System.out.println("Should win cards: ");
-
-        int start = id+1;
-        int end = start + getNumberOfMatches();
-
-        // 2,3,4,5
-        for (int i = start; i < end ; i++) {
-            System.out.println("Card: " + i);
-
-        }
-
-        System.out.println(cards.get(0).getNumberOfMatches());;
-
-
-
-
-
-
-
-        System.out.println("----------------------------------------");
-
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", data='" + data + '\'' +
+                ", numbers=" + numbers +
+                ", winningNumbers=" + winningNumbers +
+                ", points=" + points +
+                ", numberOfMatches=" + numberOfMatches +
+                '}';
     }
-
-
-
-
 
 
 
